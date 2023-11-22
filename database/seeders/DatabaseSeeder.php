@@ -18,5 +18,9 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        $this->call(ProductsTableSeeder::class);
+        $this->command->info('  >>> Таблица PRODUCTS загружена данными!');
+        $this->command->info('');
     }
 }
