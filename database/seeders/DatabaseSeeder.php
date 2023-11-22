@@ -27,5 +27,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('  >>> Таблица USERS загружена данными!');
         $this->command->info('');
 
+        $this->call(ProductUserTableSeeder::class);
+        $this->command->info('  >>> Таблица PRODUCT_USERS загружена данными!');
+        $this->command->info('');
+
     }
 }
