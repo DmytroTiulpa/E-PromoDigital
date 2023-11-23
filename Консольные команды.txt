@@ -1,0 +1,19 @@
+composer create-project --prefer-dist laravel/laravel E-Promo-Digital.local
+php artisan make:model Product -m
+php artisan make:factory ProductsFactory
+php artisan make:seeder ProductsTableSeeder
+php artisan migrate --seed
+#------------------------------------------------------
+php artisan make:migration add_columns_to_table --table=users
+php artisan make:migration create_product_user_table
+php artisan make:seeder UsersTableSeeder
+php artisan make:seeder ProductUserTableSeeder
+php artisan migrate --seed
+#------------------------------------------------------
+php artisan make:seeder ProductUserTableSeeder
+php artisan migrate:refresh --seed
+#------------------------------------------------------
+php artisan make:controller UserController
+php artisan make:controller ProductController
+#------------------------------------------------------
+php artisan make:migration remove_column_name_in_users_table --table=users
