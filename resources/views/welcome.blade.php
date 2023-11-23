@@ -38,6 +38,62 @@
                     </svg>
                 </div>
 
+                <a href="{{ route('getUsers') }}">get users</a><br>
+                <a href="{{ route('getUserById', ['id' => 2]) }}">get user by id</a><br>
+                <form action="{{ route('deleteUser', ['id' => 2]) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">delete user</button>
+                </form>
+                <form action="{{ route('createUser', [
+                            'first_name' => 'Dmytro',
+                            'last_name' => 'Tiulpa',
+                            'products_id' => [3,4,5]
+                        ]) }}" method="POST">
+                    @csrf
+                    <button type="submit">create user</button>
+                </form>
+                <form action="{{ route('updateUser', [
+                            'id' => 1,
+                            'first_name' => 'Dmytro 1',
+                            'last_name' => 'Tiulpa 1',
+                            'products_id' => [1,2,3]
+                        ]) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit">update user</button>
+                </form>
+
+                <br>
+
+                <a href="{{ route('getProducts') }}">get products</a><br>
+                <a href="{{ route('getProductById', ['id' => 2]) }}">get product by id</a>
+                <form action="{{ route('deleteProduct', ['id' => 2]) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">delete product</button>
+                </form>
+                <form action="{{ route('createProduct', [
+                            'title' => 'Product title',
+                            'description' => 'Product description',
+                            'price' => 99.99,
+                            'users_id' => [3,4,5]
+                        ]) }}" method="POST">
+                    @csrf
+                    <button type="submit">create product</button>
+                </form>
+                <form action="{{ route('updateProduct', [
+                            'id' => 1,
+                            'title' => 'Product title',
+                            'description' => 'Product description',
+                            'price' => '999.99',
+                            'users_id' => [1,2,3]
+                        ]) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit">update product</button>
+                </form>
+
                 <div class="mt-16">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                         <a href="https://laravel.com/docs" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">

@@ -9,14 +9,19 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
     /**
      * GET /users - список користувачів
      * @return JsonResponse
      */
     public function getUsers(): JsonResponse
     {
-        $users = User::with('products')->get();
-        return response()->json($users);
+        $users = User::select('users.id', 'users.first_name', 'users.last_name')
+            ->with(['products' => function ($query) {
+                    $query->select('products.id', 'products.title', 'products.description');
+                }])
+            ->get();
+            return response()->json($users);
     }
 
     /**
@@ -27,6 +32,7 @@ class UserController extends Controller
     public function createUser(Request $request): JsonResponse
     {
         //$faker = Faker::create();
+        //dd($request->first_name, $request->last_name, $request->products_id);
 
         $user = new User();
         $user->fill($request->only(['first_name', 'last_name']));
@@ -57,12 +63,15 @@ class UserController extends Controller
      */
     public function getUserById($id): JsonResponse
     {
-        $user = User::with('products')->find($id);
+        $user = User::select('users.id', 'users.first_name', 'users.last_name', 'users.avatar')
+            ->with(['products' => function ($query) {
+                $query->select('products.id', 'products.title', 'products.description', 'products.price');
+            }])->find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found.'], 404);
         }
 
-        $amount = $user->products->sum('price');
+        $amount = $user->products()->sum('price');
         $user->amount = $amount;
 
         return response()->json($user);
@@ -84,7 +93,7 @@ class UserController extends Controller
         $user->update($request->only(['first_name', 'last_name']));
 
         $user->products()->detach();
-        foreach ($request->input('products', []) as $productId) {
+        foreach ($request->input('products_id', []) as $productId) {
             $product = Product::find($productId);
             if ($product) {
                 $user->products()->save($product);

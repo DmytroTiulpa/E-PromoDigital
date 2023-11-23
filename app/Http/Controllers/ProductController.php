@@ -15,7 +15,11 @@ class ProductController extends Controller
      */
     public function getProducts(): JsonResponse
     {
-        $products = Product::with('user')->get();
+        $products = Product::select('products.id', 'products.title', 'products.description', 'products.price')
+            ->with(['users' => function ($query) {
+                $query->select('users.id', 'users.first_name', 'users.last_name');
+            }])
+            ->get();
         return response()->json($products);
     }
 
@@ -34,7 +38,7 @@ class ProductController extends Controller
         foreach ($request->input('users_id', []) as $userId) {
             $user = User::find($userId);
             if ($user) {
-                $product->user()->associate($user)->save();
+                $product->users()->save($user); //->associate($user)->save();
             }
         }
 
@@ -48,7 +52,11 @@ class ProductController extends Controller
      */
     public function getProductById($id): JsonResponse
     {
-        $product = Product::with('user')->find($id);
+        $product = Product::select('products.id', 'products.title', 'products.description', 'products.price')
+            ->with(['users' => function ($query) {
+                $query->select('users.id', 'users.first_name', 'users.last_name');
+            }])
+            ->find($id);
         if (!$product) {
             return response()->json(['error' => 'Product not found.'], 404);
         }
@@ -71,11 +79,13 @@ class ProductController extends Controller
 
         $product->update($request->only(['title', 'description', 'price']));
 
-        $product->user()->dissociate();
+        $product->users()->detach();
+        //$product->users()->dissociate();
         foreach ($request->input('users_id', []) as $userId) {
             $user = User::find($userId);
             if ($user) {
-                $product->user()->associate($user)->save();
+                $product->users()->save($user);
+                //$product->users()->associate($user)->save();
             }
         }
 
